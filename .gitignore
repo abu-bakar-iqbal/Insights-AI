@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+.venv
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Project Specific
+data/results/traces/*.json
+data/uploads/*
+!data/uploads/pakistan_finance_bill_2024.txt
+!data/uploads/energy_sector_reforms_pakistan.txt
+data/results/*.txt
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store

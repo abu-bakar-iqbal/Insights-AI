@@ -1,0 +1,12 @@
+# Summary of Pakistan Finance Bill 2024-25 - Proposed Tax Amendments
+
+The Government of Pakistan has unveiled the Finance Bill 2024-25, introducing several critical amendments to the Income Tax Ordinance 2001 and the Sales Tax Act 1990.
+
+## Key Highlights for the Logistics and Tech Sector:
+1. **Increase in Withholding Tax (WHT)**: A proposed increase of 2.5% in WHT for non-filers providing services in the transport and logistics sector. 
+2. **Sales Tax on Digital Services**: Introduction of a standardized 18% Sales Tax on software consultancy and digital marketplace operations.
+3. **Export Facilitation**: A new scheme for IT exporters allowing for 100% tax credit provided they bring 80% of their proceeds through formal banking channels.
+4. **Petroleum Levy**: An increase in the maximum limit of Petroleum Development Levy (PDL) to PKR 80 per liter, which is expected to increase freight costs across the country by approximately 12-15%.
+
+## Strategic Implications:
+Companies must transition to 'Filer' status immediately to avoid the excessive WHT. Logistics providers should prepare for a significant hike in operational costs due to the PDL increase.

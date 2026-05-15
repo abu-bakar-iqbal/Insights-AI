@@ -1,0 +1,12 @@
+# Report on Energy Sector Reforms and Tariff Adjustments in Pakistan (Q3 2024)
+
+The National Electric Power Regulatory Authority (NEPRA) has announced a revised uniform tariff for the industrial sector to address the circular debt crisis.
+
+## Policy Changes:
+- **Base Tariff Increase**: The average base tariff for industrial B3 and B4 consumers has been increased by PKR 5.72 per unit.
+- **Fixed Charges**: Introduction of fixed monthly charges based on sanctioned load even if the consumption is zero.
+- **Solar Net Metering**: Rumors of shifting from net metering to net billing (at a lower buy-back rate) have been confirmed as under consideration by the Power Division.
+
+## Impact on Manufacturing:
+The textile and cement sectors are expected to see an 8-10% rise in production costs. Small to medium enterprises (SMEs) without captive power generation are most at risk.
+The uncertainty regarding solar net-metering buy-back rates is expected to slow down the adoption of commercial solar projects in urban hubs like Karachi and Lahore.

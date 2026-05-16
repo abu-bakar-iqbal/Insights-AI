@@ -1,52 +1,140 @@
-from agents.base_agent import BaseAgent
+import json
 from agents.processor import DocumentProcessorAgent
-from agents.extractor import InsightExtractorAgent
-from agents.analyst import ImpactAnalystAgent
-from agents.generator import ActionGeneratorAgent
-from core.state_manager import StateManager
-from core.logger import TraceLogger
 
-class SupervisorAgent(BaseAgent):
-    def __init__(self, state_manager: StateManager, logger: TraceLogger):
-        super().__init__("Supervisor", "Orchestrates the Insight-to-Action workflow.", logger)
+SYSTEM_PROMPT = """
+You are an Elite Strategic Advisor specializing in the Pakistan market.
+
+CRITICAL RULE 1: Only use information from the provided document text. Do NOT invent facts.
+CRITICAL RULE 2: EXTREME BREVITY. Assume the CEO has exactly 10 seconds to read the entire report. Use ONLY point-to-point data. No fluff, no detailed paragraphs. Maximum 15 words for any description or content field.
+
+Analyze the provided content and generate a CEO-level strategic intelligence report.
+Your output MUST be valid JSON in exactly this format (no extra text outside the JSON):
+
+{
+  "extracted_metrics": {
+    "monthly_revenue_pkr": "...", // e.g. "5.2M" or "0" if not found
+    "operating_costs_pkr": "...", // e.g. "1.1M" or "0" if not found
+    "compliance_score": 0, // e.g. 85 or 0 if not found
+    "overall_efficiency": 0.0 // A score from 1.0 to 10.0 based on the document's tone
+  },
+  "main_feeds": [
+    {"title": "...", "content": "..."}
+  ],
+  "risks": [
+    {
+      "title": "...",
+      "severity": "High",
+      "pkr_risk_value": "PKR X,XXX,XXX (Estimate)",
+      "impact_description": "..."
+    }
+  ],
+  "actions": [
+    {
+      "id": "A1",
+      "title": "...",
+      "details": "...",
+      "projected_impact": "..."
+    }
+  ]
+}
+
+Extract ALL POSSIBLE risks and execution plans found in the data. Do not limit the count. Keep descriptions point-to-point.
+"""
+
+class SupervisorAgent:
+    def __init__(self, state_manager, logger):
         self.state_manager = state_manager
         self.logger = logger
-        
-        # Propagate logger to sub-agents
         self.processor = DocumentProcessorAgent()
         self.processor.logger = logger
-        
-        self.extractor = InsightExtractorAgent()
-        self.extractor.logger = logger
-        
-        self.analyst = ImpactAnalystAgent()
-        self.analyst.logger = logger
-        
-        self.generator = ActionGeneratorAgent()
-        self.generator.logger = logger
 
-    async def run_workflow(self, file_path: str):
+    def log_trace(self, step_name, input_data, output_data):
+        if self.logger:
+            self.logger.log_step(
+                self.__class__.__name__, step_name, input_data, output_data
+            )
+
+    async def run_workflow(self, file_paths: list):
         self.logger.start_new_trace()
-        self.log_trace("Workflow started", {"file": file_path}, None)
+        self.log_trace("Workflow started", {"files": file_paths}, None)
 
-        # Step 1: Ingest
-        content = await self.processor.process(file_path)
+        # Step 1: Extract text from all files
+        all_text = ""
+        for path in file_paths:
+            text = await self.processor.process(path)
+            all_text += f"\n\n--- Document: {path.split('/')[-1]} ---\n{text}"
 
-        # Step 2: Insights
-        insights = await self.extractor.extract_insights(content)
-
-        # Step 3: Impact Analysis
-        current_state = self.state_manager.get_state()
-        impact = await self.analyst.analyze_impact(insights, current_state)
-
-        # Step 4: Action Generation
-        actions = await self.generator.generate_actions(f"{insights}\n\nImpact Analysis:\n{impact}")
-
-        self.log_trace("Workflow completed", None, {"insights": "Extracted and Analyzed"})
+        # Step 2: Send to Gemini via standard API key call
+        result = await self._run_analysis(all_text, file_paths)
         
+        # Add to history
+        file_names = ", ".join([p.split('/')[-1] for p in file_paths])
+        self.state_manager.add_action_log(f"Analyzed Documents: {file_names}", "Success")
+        
+        return result
+
+    async def run_workflow_from_content(self, content: str, source_name: str):
+        self.logger.start_new_trace()
+        self.log_trace("URL Workflow started", {"source": source_name}, None)
+
+        result = await self._run_analysis(content, [source_name])
+        
+        # Add to history
+        self.state_manager.add_action_log(f"Analyzed URL: {source_name}", "Success")
+        
+        return result
+
+    async def _run_analysis(self, content: str, sources: list) -> dict:
+        current_state = self.state_manager.get_state()
+
+        prompt = f"""
+Current Organization State: {json.dumps(current_state, indent=2)}
+
+=== DOCUMENT CONTENT TO ANALYZE ===
+{content[:15000]}  
+=== END OF CONTENT ===
+
+Generate the strategic intelligence report as a JSON object.
+"""
+        response_text = await self.processor.chat(prompt, SYSTEM_PROMPT)
+        self.log_trace("Gemini response received", None, {"length": len(response_text)})
+
+        # Robust JSON extraction
+        json_str = response_text.strip()
+        if "```json" in json_str:
+            json_str = json_str.split("```json")[1].split("```")[0].strip()
+        elif "```" in json_str:
+            json_str = json_str.split("```")[1].split("```")[0].strip()
+
+        try:
+            report_data = json.loads(json_str)
+            
+            # Extract and update metrics
+            if "extracted_metrics" in report_data:
+                metrics = report_data.pop("extracted_metrics")
+                self.state_manager.update_metrics({
+                    "monthly_revenue_pkr": metrics.get("monthly_revenue_pkr", "0"),
+                    "operating_costs_pkr": metrics.get("operating_costs_pkr", "0"),
+                    "compliance_score": metrics.get("compliance_score", 0)
+                })
+                self.state_manager.update_efficiency_trend(metrics.get("overall_efficiency", 5.0))
+                
+        except Exception as e:
+            self.log_trace("JSON parse failed", {"raw": response_text[:500]}, str(e))
+            report_data = {
+                "main_feeds": [{"title": "Parse Error", "content": f"Raw response: {response_text[:300]}"}],
+                "risks": [],
+                "actions": []
+            }
+
+        self.log_trace("Analysis complete", None, {
+            "feeds": len(report_data.get("main_feeds", [])),
+            "risks": len(report_data.get("risks", [])),
+            "actions": len(report_data.get("actions", []))
+        })
+
         return {
-            "insights": insights,
-            "impact_analysis": impact,
-            "recommended_actions": actions,
-            "trace_id": self.logger.current_trace_id
+            "report": report_data,
+            "trace_id": self.logger.current_trace_id,
+            "files_processed": sources
         }

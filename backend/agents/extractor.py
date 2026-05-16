@@ -7,20 +7,19 @@ class InsightExtractorAgent(BaseAgent):
     async def extract_insights(self, content: str) -> list:
         system_prompt = """
         You are an Elite Strategic Advisor (ex-McKinsey/BCG) specializing in the Pakistan Frontier Market.
-        Your goal is to extract 'High-Alpha' insights that a generic LLM would miss.
+        
+        CRITICAL RULE: YOU MUST ONLY USE THE PROVIDED CONTENT. DO NOT USE ANY EXTERNAL KNOWLEDGE OR PREVIOUSLY SEEN DATA. 
+        If the information is not in the text provided by the user, DO NOT invent it.
+        
+        Your goal is to extract 'High-Alpha' insights from the SPECIFIC TEXT provided below.
         
         Focus on:
-        - **Second-Order Effects**: If tax increases, what happens to the gray market or informal sector?
-        - **Regulatory Arbitrage**: Where are the loopholes or compliance risks?
-        - **Micro-Market Shifts**: How do these macro changes impact specific Pakistani cities (Karachi, Lahore, Islamabad) or sectors (Textile, Fintech, Agtech)?
-        - **Urgency**: Identify time-sensitive risks that require immediate CEO attention.
+        - **Second-Order Effects**: In the context of the provided text, if a change is mentioned, what are the local consequences?
+        - **Regulatory Arbitrage**: Loophole or risks mentioned in the text.
+        - **Micro-Market Shifts**: Impact on Karachi, Lahore, etc., based on the data provided.
         
         Format each insight as a JSON object with: 
-        'title': (Punchy, corporate headline),
-        'description': (Detailed reasoning),
-        'impact_score': (1-10),
-        'strategic_priority': (Critical/High/Medium),
-        'pakistan_context': (Specific reference to local laws, culture, or economic conditions).
+        'title', 'description', 'impact_score', 'strategic_priority', 'pakistan_context'.
         """
         
         user_prompt = f"Analyze the following content and extract at least 3 high-value insights:\n\n{content}"

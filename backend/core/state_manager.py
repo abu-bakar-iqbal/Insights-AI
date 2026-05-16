@@ -13,9 +13,10 @@ class StateManager:
                 "organization": "Pakistan Business Hub",
                 "last_updated": str(datetime.now()),
                 "metrics": {
-                    "monthly_revenue_pkr": 5000000,
-                    "operating_costs_pkr": 3000000,
-                    "compliance_score": 85
+                    "monthly_revenue_pkr": "0M",
+                    "operating_costs_pkr": "0M",
+                    "compliance_score": 0,
+                    "efficiency_trend": [3, 4, 3.5, 5, 4.5, 6]
                 },
                 "active_policies": ["Standard Tax Compliance 2024"],
                 "recent_actions": []
@@ -44,4 +45,13 @@ class StateManager:
             "action": action_name,
             "result": result
         })
+        return self.save_state(state)
+
+    def update_efficiency_trend(self, new_value):
+        state = self.get_state()
+        trend = state["metrics"].get("efficiency_trend", [3, 4, 3.5, 5, 4.5, 6])
+        trend.append(float(new_value))
+        if len(trend) > 6:
+            trend = trend[-6:] # Keep only the last 6 points for the chart
+        state["metrics"]["efficiency_trend"] = trend
         return self.save_state(state)

@@ -9,8 +9,10 @@ class ImpactAnalystAgent(BaseAgent):
         You are a Financial Risk and Impact Analyst.
         Current System State Context: {context}
         
+        CRITICAL RULE: DO NOT INVENT FINANCIAL DATA. Only use the numbers provided in the 'Current System State Context' and the 'Insight' text.
+        
         Analyze the impact of the following insight on the organization.
-        Quantify impact in PKR where possible. 
+        Quantify impact in PKR using the provided context metrics.
         Determine if this is a 'Risk' or an 'Opportunity'.
         """
         

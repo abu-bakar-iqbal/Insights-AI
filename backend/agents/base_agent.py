@@ -1,30 +1,34 @@
 import os
-from typing import Any, Dict
+import time
+from typing import Any, List
 import google.generativeai as genai
 from dotenv import load_dotenv
-from core.logger import TraceLogger
 
-load_dotenv()
+# Load env explicitly from backend directory
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(backend_dir, '..', '.env'))
 
 class BaseAgent:
-    def __init__(self, name: str, role: str, logger: TraceLogger = None):
+    def __init__(self, name: str, role: str, logger=None):
         self.name = name
         self.role = role
         self.logger = logger
-        self.model_name = "gemini-1.5-flash"
+        self.model_name = "gemini-flash-latest"
+
         api_key = os.getenv("GOOGLE_API_KEY")
-        if api_key:
-            genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(self.model_name)
+        if not api_key:
+            raise EnvironmentError(
+                "GOOGLE_API_KEY not found. Please add it to backend/.env"
+            )
+        genai.configure(api_key=api_key)
 
     async def chat(self, prompt: str, system_instruction: str = None) -> str:
-        if system_instruction:
-            self.model = genai.GenerativeModel(
-                model_name=self.model_name,
-                system_instruction=system_instruction
-            )
-        
-        response = self.model.generate_content(prompt)
+        """Standard text-based Gemini call using API key."""
+        model = genai.GenerativeModel(
+            model_name=self.model_name,
+            system_instruction=system_instruction
+        )
+        response = model.generate_content(prompt)
         return response.text
 
     def log_trace(self, step: str, input_data: Any, output_data: Any):

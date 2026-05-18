@@ -13,7 +13,7 @@ class BaseAgent:
         self.name = name
         self.role = role
         self.logger = logger
-        self.model_name = "gemini-flash-latest"
+        self.model_name = "gemini-2.5-flash"
 
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:

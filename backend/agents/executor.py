@@ -93,6 +93,38 @@ class ExecutorAgent(BaseAgent):
         
         self.state_manager.add_action_log(f"Simulated: {short_desc}", history_data)
         
+        # Sync simulated after_state back to active metrics
+        if not result_data.get("is_advertisement", False) and "after_state" in result_data:
+            after = result_data["after_state"]
+            new_metrics = {}
+            
+            # Helper to check key variations
+            def get_val(keys):
+                for k in keys:
+                    if k in after:
+                        return after[k]
+                return None
+                
+            rev = get_val(["monthly_revenue_pkr", "monthly_revenue", "revenue"])
+            if rev:
+                new_metrics["monthly_revenue_pkr"] = str(rev)
+                
+            costs = get_val(["operating_costs_pkr", "operating_costs", "costs", "manual_processing_cost_pkr_per_month"])
+            if costs:
+                new_metrics["operating_costs_pkr"] = str(costs)
+                
+            comp = get_val(["compliance_score", "compliance_rate", "compliance"])
+            if comp:
+                comp_clean = str(comp).replace("%", "").replace("projected", "").replace("+", "").replace("-", "").strip()
+                try:
+                    comp_clean = comp_clean.split()[0]
+                    new_metrics["compliance_score"] = float(comp_clean)
+                except:
+                    new_metrics["compliance_score"] = comp
+                    
+            if new_metrics:
+                self.state_manager.update_metrics(new_metrics)
+        
         self.log_trace("Execution completed", None, result_data)
         
         return result_data

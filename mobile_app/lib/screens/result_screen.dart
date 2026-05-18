@@ -5,6 +5,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:insights_ai_agent/screens/simulation_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
+import 'package:insights_ai_agent/widgets/app_drawer.dart';
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({super.key});
@@ -19,6 +20,7 @@ class ResultScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Strategic Intelligence Report')),
+      drawer: const AppDrawer(),
       body: agent.isLoading
           ? Center(
               child: Column(
@@ -183,7 +185,7 @@ class ResultScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Expanded(child: Text("Projected Impact: ${action['projected_impact'] ?? 'PKR — (Pending)'}", style: const TextStyle(fontSize: 12, color: Colors.blueAccent, fontWeight: FontWeight.w600))),
                 ElevatedButton(
-                  onPressed: agent.isLoading ? null : () async {
+                  onPressed: agent.isProcessingUrl ? null : () async {
                     final res = await agent.runSimulation(action['id'] ?? 'A1', action['details'] ?? '');
                     if (context.mounted && res != null && res['result'] != null) {
                       final data = res['result'];
@@ -205,15 +207,15 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  void _showAdReviewDialog(BuildContext context, Map<String, dynamic> data) {
+  void _showAdReviewDialog(BuildContext context, Map<String, dynamic> data) async {
     final adCopy = data['ad_copy'] ?? 'Check out our new offer!';
     final prompt = data['ad_image_prompt'] ?? 'Modern marketing concept';
     
-    // Extract a few keywords from the prompt for the stock image
-    final cleanPrompt = prompt.replaceAll(RegExp(r'[^a-zA-Z0-9\s]'), '');
-    final keywords = cleanPrompt.split(' ').take(2).join(',');
-    final uniqueId = DateTime.now().millisecondsSinceEpoch.toString();
-    final imageUrl = "https://loremflickr.com/800/500/business,marketing,$keywords?lock=$uniqueId";
+    // Fetch image from AgentProvider (which handles Pexels or LoremFlickr)
+    final agent = Provider.of<AgentProvider>(context, listen: false);
+    final imageUrl = await agent.fetchAdImage(prompt);
+
+    if (!context.mounted) return;
 
     showDialog(
       context: context,

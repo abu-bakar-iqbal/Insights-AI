@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:insights_ai_agent/widgets/app_drawer.dart';
 import 'dart:async';
 
 class SimulationScreen extends StatefulWidget {
@@ -61,6 +62,7 @@ class _SimulationScreenState extends State<SimulationScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Action Simulation')),
+      drawer: const AppDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(

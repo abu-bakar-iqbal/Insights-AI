@@ -7,6 +7,7 @@ import 'package:insights_ai_agent/screens/result_screen.dart';
 import 'package:insights_ai_agent/screens/trace_screen.dart';
 import 'package:insights_ai_agent/screens/files_library_screen.dart';
 import 'package:insights_ai_agent/screens/simulation_history_screen.dart';
+import 'package:insights_ai_agent/widgets/app_drawer.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final agent = Provider.of<AgentProvider>(context);
 
     return Scaffold(
-      drawer: _buildDrawer(context),
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: const Text('Insights AI Dashboard',
             style: TextStyle(fontWeight: FontWeight.bold)),
@@ -73,6 +74,29 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 12),
             _buildRecentHistory(agent),
             const SizedBox(height: 40),
+            const Divider(color: Colors.white10),
+            const SizedBox(height: 20),
+            Center(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Insights AI Platform v2.0", style: TextStyle(color: Colors.white54, fontSize: 12, fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 16),
+                      const Text("•", style: TextStyle(color: Colors.white24)),
+                      const SizedBox(width: 16),
+                      TextButton(onPressed: (){}, child: const Text("Privacy", style: TextStyle(color: Colors.blueAccent, fontSize: 12))),
+                      TextButton(onPressed: (){}, child: const Text("Terms", style: TextStyle(color: Colors.blueAccent, fontSize: 12))),
+                      TextButton(onPressed: (){}, child: const Text("Support", style: TextStyle(color: Colors.blueAccent, fontSize: 12))),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  const Text("© 2026 Executive Intelligence Systems. All rights reserved.", style: TextStyle(color: Colors.white38, fontSize: 10)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -276,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        if (agent.isLoading)
+        if (agent.isUploadingFiles)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -298,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed: agent.isLoading
+            onPressed: agent.isUploadingFiles
                 ? null
                 : () async {
                     await agent.processFiles(_stagedFiles);
@@ -335,14 +359,14 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           TextField(
             controller: _urlController,
-            enabled: !agent.isLoading,
+            enabled: !agent.isProcessingUrl,
             decoration: InputDecoration(
-              hintText: agent.isLoading ? 'Analyzing...' : 'Paste any website or news link...',
-              prefixIcon: Icon(Icons.link, color: agent.isLoading ? Colors.white24 : const Color(0xFF00A67E)),
+              hintText: agent.isProcessingUrl ? 'Analyzing...' : 'Paste any website or news link...',
+              prefixIcon: Icon(Icons.link, color: agent.isProcessingUrl ? Colors.white24 : const Color(0xFF00A67E)),
               border: InputBorder.none,
             ),
           ),
-          if (agent.isLoading) ...[
+          if (agent.isProcessingUrl) ...[
             const SizedBox(height: 8),
             const LinearProgressIndicator(
               backgroundColor: Colors.white10,
@@ -358,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ],
-          if (!agent.isLoading) ...[
+          if (!agent.isProcessingUrl) ...[
             const Divider(color: Colors.white10),
             Align(
               alignment: Alignment.centerRight,
@@ -419,91 +443,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (_) => const ResultScreen())),
           ),
         );
-      },
-    );
-  }
-
-  // ─── Drawer ───────────────────────────────────────────────────────────────────
-  Widget _buildDrawer(BuildContext context) {
-    return Drawer(
-      backgroundColor: const Color(0xFF0F172A),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Color(0xFF00A67E)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(Icons.auto_awesome, color: Colors.white, size: 28),
-                SizedBox(height: 8),
-                Text('Insights AI',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold)),
-                Text('Agentic Intelligence Platform',
-                    style: TextStyle(color: Colors.white70, fontSize: 12)),
-              ],
-            ),
-          ),
-          _drawerTile(context, Icons.dashboard, 'Dashboard', null),
-          _drawerTile(
-              context, Icons.library_books, 'Files Library', const FilesLibraryScreen()),
-          _drawerTile(
-              context, Icons.manage_history, 'Agent Traces', const TraceScreen()),
-          _drawerTile(
-              context, Icons.analytics, 'Simulation History', const SimulationHistoryScreen()),
-          const Divider(color: Colors.white10),
-          _drawerTile(
-              context, Icons.settings, 'Settings', null, onTapOverride: () {
-            Navigator.pop(context);
-            showDialog(
-              context: context,
-              builder: (ctx) => AlertDialog(
-                backgroundColor: const Color(0xFF1E293B),
-                title: const Text("Settings", style: TextStyle(color: Colors.white)),
-                content: const Text("API configuration and preferences will be available in a future update.", style: TextStyle(color: Colors.white70)),
-                actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("OK"))],
-              ),
-            );
-          }),
-          _drawerTile(
-              context, Icons.info_outline, 'About', null, onTapOverride: () {
-            Navigator.pop(context);
-            showAboutDialog(
-              context: context,
-              applicationName: 'Insights AI',
-              applicationVersion: '1.0.0',
-              applicationIcon: const Icon(Icons.auto_awesome, color: Color(0xFF00A67E), size: 40),
-              children: [
-                const Text("Agentic Intelligence Platform powered by Gemini AI."),
-                const SizedBox(height: 8),
-                const Text("Built for strategic business intelligence analysis."),
-              ],
-            );
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget _drawerTile(
-      BuildContext context, IconData icon, String title, Widget? target, {VoidCallback? onTapOverride}) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white70),
-      title: Text(title, style: const TextStyle(color: Colors.white)),
-      onTap: () {
-        if (onTapOverride != null) {
-          onTapOverride();
-          return;
-        }
-        Navigator.pop(context);
-        if (target != null) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => target));
-        }
       },
     );
   }

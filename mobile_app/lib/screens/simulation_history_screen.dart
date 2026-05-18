@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:insights_ai_agent/services/agent_provider.dart';
 import 'package:insights_ai_agent/screens/simulation_screen.dart';
+import 'package:insights_ai_agent/widgets/app_drawer.dart';
 
 class SimulationHistoryScreen extends StatelessWidget {
   const SimulationHistoryScreen({super.key});
@@ -19,6 +20,7 @@ class SimulationHistoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Simulation History')),
+      drawer: const AppDrawer(),
       body: simHistory.isEmpty
           ? const Center(child: Text("No simulation history found.", style: TextStyle(color: Colors.white38)))
           : ListView.builder(

@@ -14,15 +14,40 @@ class ExecutorAgent(BaseAgent):
         state_before = self.state_manager.get_state()
         
         system_instruction = """
-        You are an Elite Marketing and Execution Simulator.
-        You must evaluate the requested action. If it involves advertising, marketing, social media, or public relations, flag it as an advertisement.
+        You are an Elite Agentic Simulation Engine.
+        Evaluate the requested action. 
         
-        OUTPUT MUST BE VALID JSON:
+        If it EXPLICITLY mentions creating a public advertisement or marketing campaign:
         {
-          "is_advertisement": true/false,
-          "simulation_log": "A brief 2-sentence summary of the action execution.",
-          "ad_copy": "If true, write an engaging social media post (with emojis and hashtags). If false, leave empty.",
-          "ad_image_prompt": "If true, write a highly descriptive prompt for an AI image generator to create a professional ADVERTISEMENT BANNER. Explicitly ask for bold typography, marketing elements, vibrant colors, and clear visual messaging (e.g., 'A professional advertisement banner with bold typography saying Special Offer, featuring a sleek modern laptop on a vibrant glowing background, marketing poster style'). If false, leave empty."
+          "is_advertisement": true,
+          "simulation_log": "A brief summary.",
+          "ad_copy": "Engaging social media post...",
+          "ad_image_prompt": "Highly descriptive prompt for image generator..."
+        }
+        
+        If it is NOT an advertisement (e.g., workflow, operations, finance), you MUST generate a robust Action Simulation outcome.
+        Provide realistic data based on the action details:
+        {
+          "is_advertisement": false,
+          "action_taken": "The name of the action",
+          "status": "SUCCESS",
+          "before_state": {
+            "metric_1": "1200",
+            "metric_2": "2.5M PKR"
+          },
+          "after_state": {
+            "metric_1": "projected +15%",
+            "metric_2": "3.1M PKR"
+          },
+          "execution_logs": [
+            "Step 1: Mock CRM updated",
+            "Step 2: Workflow trigger initiated",
+            "Step 3: Analytics dashboard updated"
+          ],
+          "visualization": {
+            "message": "Campaign successfully launched. Expected impact: +X%",
+            "metrics_changed": ["metric_1", "metric_2"]
+          }
         }
         """
 
@@ -41,9 +66,12 @@ class ExecutorAgent(BaseAgent):
         except:
             result_data = {
                 "is_advertisement": False,
-                "simulation_log": "Simulated execution completed.",
-                "ad_copy": "",
-                "ad_image_prompt": ""
+                "action_taken": action_details[:50],
+                "status": "FAILED_TO_PARSE",
+                "before_state": {"status": "unknown"},
+                "after_state": {"status": "unknown"},
+                "execution_logs": ["System error simulating action."],
+                "visualization": {"message": "Error occurred.", "metrics_changed": []}
             }
         
         # --- NEW: Tangible Action Result ---
@@ -54,17 +82,17 @@ class ExecutorAgent(BaseAgent):
         with open(result_path, "w") as f:
             f.write(f"ACTION EXECUTION REPORT\n=======================\n")
             f.write(f"Action ID: {action_id}\nDetails: {action_details}\n\n")
-            f.write(f"SIMULATION OUTPUT:\n{result_data['simulation_log']}\n")
+            f.write(json.dumps(result_data, indent=2))
         
-        # Update the state log
-        self.state_manager.add_action_log(f"Executed: {action_id}", f"Report generated")
+        # Update the state log with meaningful name and full result for history viewing
+        short_desc = action_details[:60] + "..." if len(action_details) > 60 else action_details
+        
+        # Filter out heavy ad copy from history to save space if needed, but keep core data
+        history_data = result_data.copy()
+        history_data['action_id'] = action_id
+        
+        self.state_manager.add_action_log(f"Simulated: {short_desc}", history_data)
         
         self.log_trace("Execution completed", None, result_data)
         
-        return {
-            "action_id": action_id,
-            "simulation_log": result_data["simulation_log"],
-            "is_advertisement": result_data.get("is_advertisement", False),
-            "ad_copy": result_data.get("ad_copy", ""),
-            "ad_image_prompt": result_data.get("ad_image_prompt", "")
-        }
+        return result_data

@@ -105,5 +105,24 @@ async def get_files():
     files_list.sort(key=lambda x: x["date"], reverse=True)
     return files_list
 
+@app.delete("/files/{name}")
+async def delete_file(name: str):
+    upload_dir = "c:/Users/PMLS/Desktop/Insights AI/data/uploads"
+    file_path = os.path.join(upload_dir, name)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        os.remove(file_path)
+        return {"status": "deleted", "file": name}
+    return {"status": "not_found", "file": name}
+
+from fastapi.responses import FileResponse
+
+@app.get("/files/{name}/download")
+async def download_file(name: str):
+    upload_dir = "c:/Users/PMLS/Desktop/Insights AI/data/uploads"
+    file_path = os.path.join(upload_dir, name)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path, filename=name)
+    return {"status": "not_found"}
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

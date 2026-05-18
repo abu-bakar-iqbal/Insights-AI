@@ -6,14 +6,16 @@ You are an Elite Strategic Advisor specializing in the Pakistan market.
 
 CRITICAL RULE 1: Only use information from the provided document text. Do NOT invent facts.
 CRITICAL RULE 2: EXTREME BREVITY. Assume the CEO has exactly 10 seconds to read the entire report. Use ONLY point-to-point data. No fluff, no detailed paragraphs. Maximum 15 words for any description or content field.
+CRITICAL RULE 3: EXTRACT REAL PRICES. You must extract exact numerical monetary values (PKR, USD, prices, costs) directly from the text. NEVER use placeholders like 'X,XXX'. If exact numbers aren't found, make a highly educated data-driven estimate based on the text.
+CRITICAL RULE 4: FIRST ACTION IS ALWAYS MARKETING. The very first execution plan (id: "A1") MUST always be a public advertising, social media, or marketing campaign designed to reduce the biggest risk or promote the biggest opportunity found in the data.
 
 Analyze the provided content and generate a CEO-level strategic intelligence report.
 Your output MUST be valid JSON in exactly this format (no extra text outside the JSON):
 
 {
   "extracted_metrics": {
-    "monthly_revenue_pkr": "...", // e.g. "5.2M" or "0" if not found
-    "operating_costs_pkr": "...", // e.g. "1.1M" or "0" if not found
+    "monthly_revenue_pkr": "...", // Extract real monetary value (e.g. "PKR 5.2M")
+    "operating_costs_pkr": "...", // Extract real cost (e.g. "PKR 1.1M")
     "compliance_score": 0, // e.g. 85 or 0 if not found
     "overall_efficiency": 0.0 // A score from 1.0 to 10.0 based on the document's tone
   },
@@ -24,13 +26,19 @@ Your output MUST be valid JSON in exactly this format (no extra text outside the
     {
       "title": "...",
       "severity": "High",
-      "pkr_risk_value": "PKR X,XXX,XXX (Estimate)",
+      "pkr_risk_value": "PKR 5,000,000", // MUST be a real number extracted from text. No 'X's.
       "impact_description": "..."
     }
   ],
   "actions": [
     {
       "id": "A1",
+      "title": "Launch Marketing Campaign to [Mitigate Risk / Promote Opportunity]",
+      "details": "Create a public advertisement / social media post to...", // Explicitly mention creating an ad/marketing.
+      "projected_impact": "PKR +2,000,000" // MUST include the financial impact/price extracted from data.
+    },
+    {
+      "id": "A2",
       "title": "...",
       "details": "...",
       "projected_impact": "..."
@@ -38,7 +46,7 @@ Your output MUST be valid JSON in exactly this format (no extra text outside the
   ]
 }
 
-Extract ALL POSSIBLE risks and execution plans found in the data. Do not limit the count. Keep descriptions point-to-point.
+Extract ALL POSSIBLE risks and execution plans found in the data. Do not limit the count. Keep descriptions point-to-point. Show all extracted prices clearly.
 """
 
 class SupervisorAgent:
@@ -85,16 +93,13 @@ class SupervisorAgent:
         return result
 
     async def _run_analysis(self, content: str, sources: list) -> dict:
-        current_state = self.state_manager.get_state()
-
+        # Only pass document content — no old state to prevent data mixing
         prompt = f"""
-Current Organization State: {json.dumps(current_state, indent=2)}
-
 === DOCUMENT CONTENT TO ANALYZE ===
 {content[:15000]}  
 === END OF CONTENT ===
 
-Generate the strategic intelligence report as a JSON object.
+Generate the strategic intelligence report as a JSON object. Base ALL data points strictly on the above content.
 """
         response_text = await self.processor.chat(prompt, SYSTEM_PROMPT)
         self.log_trace("Gemini response received", None, {"length": len(response_text)})

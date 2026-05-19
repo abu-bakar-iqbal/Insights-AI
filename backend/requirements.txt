@@ -9,3 +9,4 @@ httpx
 pymupdf
 pandas
 jinja2
+beautifulsoup4

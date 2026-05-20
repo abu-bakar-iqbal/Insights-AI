@@ -8,14 +8,15 @@ CRITICAL RULE 1: Only use information from the provided document text. Do NOT in
 CRITICAL RULE 2: EXTREME BREVITY. Assume the CEO has exactly 10 seconds to read the entire report. Use ONLY point-to-point data. No fluff, no detailed paragraphs. Maximum 15 words for any description or content field.
 CRITICAL RULE 3: EXTRACT REAL METRICS. You must extract exact numerical values (PKR, USD, prices, costs, compliance scores) directly from the text. NEVER use placeholders like 'X,XXX' or leave them as '0' or 'PKR 0'. If exact numbers for operating_costs_pkr or compliance_score aren't explicitly found in the text, you MUST make a highly realistic, educated, data-driven estimate based on the context (e.g. estimate operating costs as a reasonable 1-5% of the revenue, and compliance score between 70% and 98% based on the audit success or failure rates described). Always provide complete, premium metrics data.
 CRITICAL RULE 4: FIRST ACTION IS ALWAYS MARKETING. The very first execution plan (id: "A1") MUST always be a public advertising, social media, or marketing campaign designed to reduce the biggest risk or promote the biggest opportunity found in the data.
+CRITICAL RULE 5: FORMAT LARGE NUMBERS WITH M OR B. Any monetary value or large numerical figure (revenue, costs, impacts, risks) MUST be formatted using M (Millions) or B (Billions) suffix, e.g. "PKR 5.2M" or "PKR 2.5B" instead of raw digits like "5,200,000" or "2,500,000,000".
 
 Analyze the provided content and generate a CEO-level strategic intelligence report.
 Your output MUST be valid JSON in exactly this format (no extra text outside the JSON):
 
 {
   "extracted_metrics": {
-    "monthly_revenue_pkr": "...", // Extract real monetary value (e.g. "PKR 5.2M")
-    "operating_costs_pkr": "...", // Extract real cost (e.g. "PKR 1.1M")
+    "monthly_revenue_pkr": "...", // Format with M/B (e.g. "5.2M")
+    "operating_costs_pkr": "...", // Format with M/B (e.g. "1.1M")
     "compliance_score": 0, // e.g. 85 or 0 if not found
     "overall_efficiency": 0.0 // A score from 1.0 to 10.0 based on the document's tone
   },
@@ -26,7 +27,7 @@ Your output MUST be valid JSON in exactly this format (no extra text outside the
     {
       "title": "...",
       "severity": "High",
-      "pkr_risk_value": "PKR 5,000,000", // MUST be a real number extracted from text. No 'X's.
+      "pkr_risk_value": "5.0M", // MUST be formatted using M or B suffix. No raw long digits.
       "impact_description": "..."
     }
   ],
@@ -35,7 +36,7 @@ Your output MUST be valid JSON in exactly this format (no extra text outside the
       "id": "A1",
       "title": "Launch Marketing Campaign to [Mitigate Risk / Promote Opportunity]",
       "details": "Create a public advertisement / social media post to...", // Explicitly mention creating an ad/marketing.
-      "projected_impact": "PKR +2,000,000" // MUST include the financial impact/price extracted from data.
+      "projected_impact": "+2.0M" // MUST be formatted using M or B suffix. No raw long digits.
     },
     {
       "id": "A2",
@@ -101,15 +102,19 @@ class SupervisorAgent:
 
 Generate the strategic intelligence report as a JSON object. Base ALL data points strictly on the above content.
 """
-        response_text = await self.processor.chat(prompt, SYSTEM_PROMPT)
-        self.log_trace("Gemini response received", None, {"length": len(response_text)})
+        try:
+            response_text = await self.processor.chat(prompt, SYSTEM_PROMPT)
+            self.log_trace("Gemini response received", None, {"length": len(response_text)})
 
-        # Robust JSON extraction
-        json_str = response_text.strip()
-        if "```json" in json_str:
-            json_str = json_str.split("```json")[1].split("```")[0].strip()
-        elif "```" in json_str:
-            json_str = json_str.split("```")[1].split("```")[0].strip()
+            # Robust JSON extraction
+            json_str = response_text.strip()
+            if "```json" in json_str:
+                json_str = json_str.split("```json")[1].split("```")[0].strip()
+            elif "```" in json_str:
+                json_str = json_str.split("```")[1].split("```")[0].strip()
+        except Exception as e:
+            self.log_trace("Gemini API Error", None, {"error": str(e)})
+            json_str = '{"extracted_metrics": {}, "main_feeds": [{"title": "API Error", "content": "The Google Gemini API is currently blocked or returning an error. Please verify your API Key in the backend .env file."}], "risks": [], "actions": []}'
 
         try:
             report_data = json.loads(json_str)

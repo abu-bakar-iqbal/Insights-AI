@@ -9,3 +9,6 @@ httpx
 pymupdf
 pandas
 jinja2
+pymongo
+motor
+dnspython

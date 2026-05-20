@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:insights_ai_agent/widgets/app_drawer.dart';
 import 'dart:async';
 
 class SimulationScreen extends StatefulWidget {
@@ -61,15 +60,14 @@ class _SimulationScreenState extends State<SimulationScreen> {
     final actionTaken = data['action_taken'] ?? 'Unknown Action';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Action Simulation')),
-      drawer: const AppDrawer(),
+      appBar: AppBar(title: const Text('Predict Action Impact')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Digital Twin: Impact Simulation',
+              'Projected Results & Impact',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),

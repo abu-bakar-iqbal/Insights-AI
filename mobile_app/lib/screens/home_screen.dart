@@ -4,9 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:insights_ai_agent/services/agent_provider.dart';
 import 'package:insights_ai_agent/screens/result_screen.dart';
-import 'package:insights_ai_agent/screens/trace_screen.dart';
-import 'package:insights_ai_agent/screens/files_library_screen.dart';
-import 'package:insights_ai_agent/screens/simulation_history_screen.dart';
 import 'package:insights_ai_agent/widgets/app_drawer.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -26,7 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AgentProvider>(context, listen: false).fetchState();
+      final p = Provider.of<AgentProvider>(context, listen: false);
+      p.fetchState();
+      p.fetchAutoMode();
+      p.fetchConfig();
     });
   }
 
@@ -37,8 +37,49 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        title: const Text('Insights AI Dashboard',
+        title: const Text('Insights AI',
             style: TextStyle(fontWeight: FontWeight.bold)),
+        actions: [
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            decoration: BoxDecoration(
+              color: agent.autoMode ? const Color(0xFF00A67E).withOpacity(0.15) : Colors.white.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: agent.autoMode ? const Color(0xFF00A67E) : Colors.white10,
+                width: 1,
+              ),
+            ),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => agent.toggleAutoMode(!agent.autoMode),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      agent.autoMode ? Icons.bolt : Icons.power_settings_new,
+                      size: 14,
+                      color: agent.autoMode ? const Color(0xFF00A67E) : Colors.white38,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      agent.autoMode ? "AUTO MODE ON" : "AUTO MODE OFF",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: agent.autoMode ? Colors.white : Colors.white38,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -103,6 +144,36 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  String _formatLargeFigure(dynamic value) {
+    if (value == null) return '0';
+    String original = value.toString().trim();
+    
+    // If it already ends with B, M, or K (case-insensitive), just clean and return it
+    String upper = original.toUpperCase();
+    if (upper.endsWith('B') || upper.endsWith('M') || upper.endsWith('K')) {
+      return original.replaceAll("PKR", "").replaceAll("pkr", "").replaceAll("Rs", "").replaceAll("rs", "").replaceAll("\$", "").trim();
+    }
+    
+    // Clean string to get numbers only
+    String cleanStr = original.replaceAll(RegExp(r'[^0-9.]'), '').trim();
+    double? val = double.tryParse(cleanStr);
+    if (val == null) {
+      return original.replaceAll("PKR", "").replaceAll("pkr", "").replaceAll("Rs", "").replaceAll("rs", "").replaceAll("\$", "").trim();
+    }
+    
+    if (val >= 1000000000) {
+      double res = val / 1000000000;
+      return "${res.toStringAsFixed(res % 1 == 0 ? 0 : 2)}B";
+    } else if (val >= 1000000) {
+      double res = val / 1000000;
+      return "${res.toStringAsFixed(res % 1 == 0 ? 0 : 2)}M";
+    } else if (val >= 1000) {
+      double res = val / 1000;
+      return "${res.toStringAsFixed(res % 1 == 0 ? 0 : 2)}K";
+    }
+    return val.toStringAsFixed(val % 1 == 0 ? 0 : 2);
+  }
+
   // ─── Metric Overview ────────────────────────────────────────────────────────
   Widget _buildMetricOverview(AgentProvider agent) {
     final metrics = agent.systemState?['metrics'] ?? {};
@@ -114,10 +185,10 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Row(
           children: [
-            _metricItem('Revenue', '${metrics['monthly_revenue_pkr'] ?? '0'}',
+            _metricItem('Revenue', _formatLargeFigure(metrics['monthly_revenue_pkr']),
                 Colors.greenAccent),
             const SizedBox(width: 12),
-            _metricItem('Costs', '${metrics['operating_costs_pkr'] ?? '0'}',
+            _metricItem('Costs', _formatLargeFigure(metrics['operating_costs_pkr']),
                 Colors.orangeAccent),
             const SizedBox(width: 12),
             _metricItem('Compliance', '${metrics['compliance_score'] ?? '0'}%',
@@ -423,7 +494,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: actions.length > 5 ? 5 : actions.length,
+      itemCount: actions.length,
       itemBuilder: (context, index) {
         final action = actions[actions.length - 1 - index];
         return Card(

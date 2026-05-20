@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
+import 'package:insights_ai_agent/services/app_config.dart';
 
 class ApiService {
-  final String baseUrl = "http://localhost:8000";
+  final String baseUrl = AppConfig.baseUrl;
 
   /// Web-compatible upload using bytes from PlatformFile
   Future<Map<String, dynamic>> uploadPlatformFiles(

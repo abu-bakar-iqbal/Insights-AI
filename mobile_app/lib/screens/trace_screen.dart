@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:insights_ai_agent/services/api_service.dart';
-import 'package:insights_ai_agent/widgets/app_drawer.dart';
 
 class TraceScreen extends StatefulWidget {
   const TraceScreen({super.key});
@@ -36,7 +35,6 @@ class _TraceScreenState extends State<TraceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Agent Reasoning Traces')),
-      drawer: const AppDrawer(),
       body: _isLoading 
         ? const Center(child: CircularProgressIndicator())
         : ListView.builder(

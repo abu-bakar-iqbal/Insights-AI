@@ -20,32 +20,36 @@ class ExecutorAgent(BaseAgent):
         If it EXPLICITLY mentions creating a public advertisement or marketing campaign:
         {
           "is_advertisement": true,
-          "simulation_log": "A brief summary.",
-          "ad_copy": "Engaging social media post...",
-          "ad_image_prompt": "Highly descriptive prompt for image generator..."
+          "simulation_log": "A very short, summarized 1-sentence explanation.",
+          "ad_copy": "Short engaging social media post...",
+          "ad_image_prompt": "tax, finance, business" // MUST be exactly 2-3 single words separated by commas, directly related to tax, finance, or business matching the campaign. Do not write full sentences.
         }
         
         If it is NOT an advertisement (e.g., workflow, operations, finance), you MUST generate a robust Action Simulation outcome.
-        Provide realistic data based on the action details:
+        Keep all descriptions extremely short, simple, and summarized so a layman can understand.
+        Provide realistic data based on the action details.
+        CRITICAL RULE: Any monetary value or large numerical figure MUST be formatted using M (Millions) or B (Billions) suffix (e.g., "3.1M" or "2.5B" instead of raw digits like "3,100,000" or "2,500,000,000").
+        
+        Provide output matching:
         {
           "is_advertisement": false,
-          "action_taken": "The name of the action",
+          "action_taken": "The name of the action (simple & clean)",
           "status": "SUCCESS",
           "before_state": {
             "metric_1": "1200",
-            "metric_2": "2.5M PKR"
+            "metric_2": "2.5M"
           },
           "after_state": {
             "metric_1": "projected +15%",
-            "metric_2": "3.1M PKR"
+            "metric_2": "3.1M"
           },
           "execution_logs": [
-            "Step 1: Mock CRM updated",
-            "Step 2: Workflow trigger initiated",
-            "Step 3: Analytics dashboard updated"
+            "Step 1: Short action step (max 8 words)",
+            "Step 2: Short action step (max 8 words)",
+            "Step 3: Short action step (max 8 words)"
           ],
           "visualization": {
-            "message": "Campaign successfully launched. Expected impact: +X%",
+            "message": "Extremely short summary of the impact. Max 12 words.",
             "metrics_changed": ["metric_1", "metric_2"]
           }
         }
@@ -53,13 +57,16 @@ class ExecutorAgent(BaseAgent):
 
         prompt = f"Action to execute: {action_details}\nState: {state_before}"
         
-        response_text = await self.chat(prompt, system_instruction)
-        
-        json_str = response_text.strip()
-        if "```json" in json_str:
-            json_str = json_str.split("```json")[1].split("```")[0].strip()
-        elif "```" in json_str:
-            json_str = json_str.split("```")[1].split("```")[0].strip()
+        try:
+            response_text = await self.chat(prompt, system_instruction)
+            json_str = response_text.strip()
+            if "```json" in json_str:
+                json_str = json_str.split("```json")[1].split("```")[0].strip()
+            elif "```" in json_str:
+                json_str = json_str.split("```")[1].split("```")[0].strip()
+        except Exception as e:
+            self.log_trace("Gemini API Error", None, {"error": str(e)})
+            json_str = '{"is_advertisement": false, "action_taken": "API Error", "status": "FAILED", "before_state": {}, "after_state": {}, "execution_logs": ["Gemini API Blocked", "Please fix your API key."], "visualization": {"message": "API Error. Check backend terminal.", "metrics_changed": []}}'
             
         try:
             result_data = json.loads(json_str)

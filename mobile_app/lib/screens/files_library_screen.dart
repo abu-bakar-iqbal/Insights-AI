@@ -3,7 +3,6 @@ import 'package:animate_do/animate_do.dart';
 import 'package:insights_ai_agent/services/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
-import 'package:insights_ai_agent/widgets/app_drawer.dart';
 
 class FilesLibraryScreen extends StatefulWidget {
   const FilesLibraryScreen({super.key});

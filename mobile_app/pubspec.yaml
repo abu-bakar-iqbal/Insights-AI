@@ -1,6 +1,6 @@
 name: insights_ai_agent
 description: Pakistan-focused Autonomous Content-to-Action Agent.
-version: 1.0.0+1
+version: 3.0.0+1
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

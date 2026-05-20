@@ -1,17 +1,19 @@
 {
     "organization": "Pakistan Business Hub",
-    "last_updated": "2026-05-18 19:51:45.157700",
+    "last_updated": "2026-05-20 20:43:11.680865",
     "metrics": {
-        "monthly_revenue_pkr": "PKR 894.83 Billion (projected +20.1%)",
-        "operating_costs_pkr": "projected PKR 15.95 Billion (+0.38%)",
-        "compliance_score": 95.5,
+        "monthly_revenue_pkr": "0",
+        "operating_costs_pkr": "0",
+        "compliance_score": 0,
         "efficiency_trend": [
-            9.9,
-            8.7,
-            8.5,
-            8.5,
             7.5,
-            8.8
+            9.0,
+            7.5,
+            8.5,
+            8.5,
+            7.0,
+            8.5,
+            5.0
         ]
     },
     "active_policies": [
@@ -657,6 +659,141 @@
                 },
                 "action_id": "A4"
             }
+        },
+        {
+            "timestamp": "2026-05-19 17:40:46.104776",
+            "action": "Analyzed Documents: performance report (1).pdf",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-19 17:41:07.331758",
+            "action": "Simulated: Create public ads/social media promoting FBR transparency, t...",
+            "result": {
+                "is_advertisement": true,
+                "simulation_log": "This campaign aims to rebuild public trust in the Federal Board of Revenue (FBR) by proactively communicating its commitment to transparency and the implementation of taxpayer-friendly digital systems. By highlighting ease of access, clarity in processes, and a more supportive environment, the campaign seeks to encourage voluntary compliance and foster a positive relationship between taxpayers and the FBR. The objective is to shift public perception from a bureaucratic entity to a facilitator of economic growth through clear, accessible tax administration.",
+                "ad_copy": "\ud83c\uddf5\ud83c\uddf0 Building a Transparent & Trustworthy Tax System Together!\n\nAt the Federal Board of Revenue (FBR), our commitment to YOU, the taxpayer, is clearer than ever. We're dedicated to fostering an environment of transparency and empowering you with user-friendly systems.\n\n\u2728 **FBR Transparency:** Access information, understand processes, and trust in a system that works for Pakistan.\n\ud83c\udf10 **Taxpayer-Friendly Systems:** Our new digital platforms are designed for your ease \u2013 making filing, payments, and queries simpler than ever before.\n\nJoin us in building a stronger, more accountable Pakistan. Your compliance fuels our nation's progress, and we're here to make that journey straightforward and open.\n\n\u27a1\ufe0f Discover the New FBR: [Link to FBR Transparency Portal/User Guide]\n\n#FBRTransparency #TaxpayerFriendly #DigitalPakistan #TrustInTaxes #PakistanBusinessHub #EasyCompliance",
+                "ad_image_prompt": "tax, transparency, digital",
+                "action_id": "A1"
+            }
+        },
+        {
+            "timestamp": "2026-05-19 17:42:02.614688",
+            "action": "Simulated: Create public ads/social media promoting FBR transparency, t...",
+            "result": {
+                "is_advertisement": true,
+                "simulation_log": "This campaign aims to rebuild public trust in the Federal Board of Revenue (FBR) by proactively communicating its commitment to transparency and the implementation of taxpayer-friendly digital systems. By highlighting ease of access, clarity in processes, and a more supportive environment, the campaign seeks to encourage voluntary compliance and foster a positive relationship between taxpayers and the FBR. The objective is to shift public perception from a bureaucratic entity to a facilitator of economic growth through clear, accessible tax administration.",
+                "ad_copy": "\ud83c\uddf5\ud83c\uddf0 Building a Transparent & Trustworthy Tax System Together!\n\nAt the Federal Board of Revenue (FBR), our commitment to YOU, the taxpayer, is clearer than ever. We're dedicated to fostering an environment of transparency and empowering you with user-friendly systems.\n\n\u2728 **FBR Transparency:** Access information, understand processes, and trust in a system that works for Pakistan.\n\ud83c\udf10 **Taxpayer-Friendly Systems:** Our new digital platforms are designed for your ease \u2013 making filing, payments, and queries simpler than ever before.\n\nJoin us in building a stronger, more accountable Pakistan. Your compliance fuels our nation's progress, and we're here to make that journey straightforward and open.\n\n\u27a1\ufe0f Discover the New FBR: [Link to FBR Transparency Portal/User Guide]\n\n#FBRTransparency #TaxpayerFriendly #DigitalPakistan #TrustInTaxes #PakistanBusinessHub #EasyCompliance",
+                "ad_image_prompt": "tax, transparency, digital",
+                "action_id": "A1"
+            }
+        },
+        {
+            "timestamp": "2026-05-19 17:42:40.870662",
+            "action": "Simulated: Analyze shortfall causes, implement targeted strategies for ...",
+            "result": {
+                "is_advertisement": false,
+                "action_taken": "Analyzed shortfall causes and implemented targeted strategies for PKR 209 Billion recovery",
+                "status": "SUCCESS",
+                "before_state": {
+                    "monthly_revenue_pkr": "PKR 744,833,333,333",
+                    "operating_costs_pkr": "PKR 89,380,000,000",
+                    "compliance_score": "92",
+                    "identified_shortfall_target_pkr": "PKR 209,000,000,000"
+                },
+                "after_state": {
+                    "monthly_revenue_pkr": "PKR 807,533,333,333 (projected +8.4%)",
+                    "operating_costs_pkr": "PKR 91,880,000,000 (projected +2.8%)",
+                    "compliance_score": "93.5 (projected +1.6%)",
+                    "shortfall_recovered_pkr": "PKR 62,700,000,000 (30% of target)",
+                    "remaining_shortfall_pkr": "PKR 146,300,000,000"
+                },
+                "execution_logs": [
+                    "Step 1: Initiated a comprehensive data analytics review of financial records, tax filings, and economic indicators to pinpoint specific causes of the PKR 209 Billion shortfall.",
+                    "Step 2: Identified primary shortfall drivers: 45% attributed to informal sector evasion, 30% to under-declaration in specific corporate sectors, and 25% to procedural inefficiencies and uncollected arrears.",
+                    "Step 3: Established a cross-functional recovery task force comprising tax experts, legal counsel, and enforcement personnel.",
+                    "Step 4: Developed targeted strategies: Phase 1 focused on enhanced audits for identified corporate under-declarers and streamlined recovery of long-standing arrears.",
+                    "Step 5: Deployed specialized audit teams to high-risk corporate entities in Karachi and Lahore, cross-referencing data with utility consumption and import records.",
+                    "Step 6: Launched a public awareness campaign (digital and print) in target informal sectors emphasizing simplified registration and benefits of compliance.",
+                    "Step 7: Implemented an accelerated dispute resolution mechanism for long-standing tax arrears, leading to several high-value settlements.",
+                    "Step 8: Recovered an initial PKR 62.7 Billion through targeted audits, negotiated settlements, and voluntary compliance surges in pilot regions.",
+                    "Step 9: Integrated recovery progress into the national revenue dashboard, providing real-time tracking of shortfall reduction.",
+                    "Step 10: Allocated additional resources (PKR 2.5 Billion) for continued enforcement, technology upgrades for data matching, and expansion of compliance outreach programs."
+                ],
+                "visualization": {
+                    "message": "Shortfall analysis successfully completed, with initial recovery efforts yielding PKR 62.7 Billion. This represents a 30% recovery towards the PKR 209 Billion target, significantly boosting monthly revenue and improving the overall compliance score. Further phases of the recovery strategy are underway.",
+                    "metrics_changed": [
+                        "monthly_revenue_pkr",
+                        "operating_costs_pkr",
+                        "compliance_score",
+                        "shortfall_recovered_pkr",
+                        "remaining_shortfall_pkr"
+                    ]
+                },
+                "action_id": "A2"
+            }
+        },
+        {
+            "timestamp": "2026-05-19 18:04:07.253685",
+            "action": "Analyzed URL: Auto-Scrape: https://www.railways.gov.pk/",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-19 18:12:42.100959",
+            "action": "Analyzed Documents: fbr recovery report 2023 (2) (1).pdf",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-19 18:13:16.601260",
+            "action": "Simulated: Create public ads, social media posts; highlight taxpayer-fr...",
+            "result": {
+                "is_advertisement": true,
+                "simulation_log": "This campaign aims to enhance the public image of the Federal Board of Revenue (FBR) by promoting its commitment to taxpayer-friendly digital systems and its vision for a simpler, more transparent tax regime. It seeks to build trust and encourage voluntary compliance by showcasing FBR as a supportive entity.",
+                "ad_copy": "\ud83c\uddf5\ud83c\uddf0 Empowering Pakistan's Taxpayers: Welcome to the New FBR! \ud83d\ude80\n\nExperience a simpler, smarter way to manage your taxes. The Federal Board of Revenue (FBR) is evolving with YOU in mind \u2013 embracing a vision of digital convenience and taxpayer-first systems.\n\n\u2728 **FBR's Vision:** A future where tax compliance is effortless, transparent, and empowering for every Pakistani.\n\ud83c\udf10 **Taxpayer-Friendly Systems:** Our updated digital portals, simplified forms, and dedicated support make your tax journey smooth.\n\nJoin us in building a stronger, more prosperous Pakistan through easy and efficient tax compliance. Your contribution fuels our nation's progress!\n\n\u27a1\ufe0f Discover the FBR Difference: [Link to FBR Portal/Guide]\n\n#FBRVision #TaxMadeEasy #DigitalPakistan #TaxpayerFriendly #PakistanBusinessHub #SimplifyCompliance",
+                "ad_image_prompt": "tax, digital, vision",
+                "action_id": "A1"
+            }
+        },
+        {
+            "timestamp": "2026-05-19 19:18:26.897600",
+            "action": "Analyzed URL: Auto-Scrape: https://www.fbr.gov.pk/cto-lahore-recovers-rs-2646-billion-in-major-tax-enforcement-action/174472",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-19 19:19:18.399625",
+            "action": "Analyzed URL: Auto-Scrape: https://www.railways.gov.pk/",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-19 19:25:20.889203",
+            "action": "Analyzed Documents: performance report (1).pdf",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-19 20:41:08.020803",
+            "action": "Analyzed URL: Auto-Scrape: https://www.fbr.gov.pk/cto-lahore-recovers-rs-2646-billion-in-major-tax-enforcement-action/174472",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-19 21:05:10.299269",
+            "action": "Analyzed URL: Auto-Scrape: https://www.railways.gov.pk/",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-19 22:41:40.698965",
+            "action": "Analyzed URL: Auto-Scrape: https://www.fbr.gov.pk/cto-lahore-recovers-rs-2646-billion-in-major-tax-enforcement-action/174472",
+            "result": "Success"
+        },
+        {
+            "timestamp": "2026-05-20 20:43:11.680865",
+            "action": "Analyzed Documents: c:\\Users\\PMLS\\Desktop\\Insights AI\\backend\\..\\data\\uploads\\performance report (1).pdf",
+            "result": "Success"
         }
+    ],
+    "web_sources": [
+        "https://www.fbr.gov.pk/cto-lahore-recovers-rs-2646-billion-in-major-tax-enforcement-action/174472",
+        "https://www.railways.gov.pk/"
+    ],
+    "email_recipients": [
+        "bcs22039@pugc.edu.pk"
     ]
 }
